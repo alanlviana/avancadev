@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/hashicorp/go-retryablehttp"
 	"fmt"
 	"log"
 	"net/http"
@@ -71,7 +72,11 @@ func makeHttpCall(urlMicroservice string, coupon string) Result {
 	values := url.Values{}
 	values.Add("coupon", coupon)
 
-	res, err := http.PostForm(urlMicroservice, values)
+	retryClient := retryablehttp.NewClient()
+	retryClient.RetryMax = 5
+
+	res, err := retryClient.PostForm(urlMicroservice, values)
+
 	if err != nil {
 		result := Result{Status: "Servidor fora do ar!"}
 		return result
