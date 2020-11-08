@@ -3,7 +3,7 @@ version: '3'
 services:
 
   rabbit:
-    image: "rabbitmq:3-management"
+    image: "rabbitmq:3-management"   
     environment:
       RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
       RABBITMQ_DEFAULT_USER: "rabbitmq"
@@ -12,3 +12,24 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+
+  a:
+    image: "alanlviana/avancadev_a:1.0"
+    ports:
+      - "9090:9090"
+    depends_on:
+      - rabbit
+      - b      
+
+      
+  b:
+    image: "alanlviana/avancadev_b:1.0"
+    restart: always
+    depends_on:
+      - rabbit
+      - c
+
+  c:
+    image: "alanlviana/avancadev_c:1.0"     
+    ports:
+      - "9092:9092"             
